@@ -1,0 +1,26 @@
+{
+  "name": "hpi-p5",
+  "version": "1.0.0",
+  "description": "human powered force field",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Human-Powered-Force-Field/HPI-p5.git"
+  },
+  "keywords": [
+    "hpi"
+  ],
+  "author": "jesper",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Human-Powered-Force-Field/HPI-p5/issues"
+  },
+  "homepage": "https://github.com/Human-Powered-Force-Field/HPI-p5#readme",
+  "dependencies": {
+    "firebase": "^8.1.1",
+    "uniq": "^1.0.1"
+  }
+}

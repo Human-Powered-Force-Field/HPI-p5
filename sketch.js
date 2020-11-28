@@ -10,7 +10,6 @@ var flowField;
 var testVar = 0;
 
 function setup() {
-  //background(0);
   createCanvas(windowWidth,windowHeight);
   cols = floor(width/scl);
   rows = floor(height/scl);
@@ -22,6 +21,7 @@ function setup() {
 
 function draw() {
   beginShape();
+  background(0);
   var yoff =0;
   for(var y=0; y<rows;y++){
     xoff =0;
@@ -72,7 +72,7 @@ function Particle(){
   }
 
   this.show = function(){
-    stroke(150, 0, 255, 10);
+    stroke(150, 0, 255, 50);
     strokeWeight(1);
     line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
     this.updatePrev();

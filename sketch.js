@@ -3,7 +3,7 @@ var scl = 20;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 5000;
+var particleObejct = 7000;
 var particles = [];
 var flowField;
 
@@ -21,15 +21,23 @@ function setup() {
 
 function draw() {
   beginShape();
-  background(0);
+  background(0, 100);
   var yoff =0;
   for(var y=0; y<rows;y++){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff,zoff)* TWO_PI;
+      var angle = noise(xoff,yoff)* TWO_PI;
       var v = p5.Vector.fromAngle(angle);
       v.setMag(1);
+      let pushX = (1 - x/(cols/2));
+      let pushY = (1 - y/(rows/2));
+      let pushVec = createVector(pushX, pushY);
+      v.add(pushVec);
+      if (v.x == 0 || v.y == 0){
+        console.log("zervector");
+      }
+      //v.setMag(1);
       flowField[index] = v;//store all of the vectors calculated into flow field
       //push();
       //translate(x*scl,y*scl)
@@ -91,7 +99,11 @@ function Particle(){
       this.pos = this.spawnpos;
       this.updatePrev();
     }
-    if(this.pos.y<0){ this.pos.y = height; this.updatePrev(); } if(this.pos.y>height){
+    if(this.pos.y<0){
+      this.pos = this.spawnpos;
+      this.updatePrev();
+    }
+    if(this.pos.y>height){
       this.pos = this.spawnpos;
       this.updatePrev();
     }
@@ -107,8 +119,8 @@ function Particle(){
 }
 
 function getPos(){
-  let xpos = 0;
-  let ypos = 0;
+  let xpos = random(width);
+  let ypos = random(height);
   if (isShooting.bc == true) {
     xpos = random(width);
     ypos = height;

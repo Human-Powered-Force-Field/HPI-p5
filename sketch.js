@@ -3,7 +3,7 @@ var scl = 20;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 7000;
+var particleObejct = 5000;
 var particles = [];
 var flowField;
 
@@ -50,11 +50,12 @@ function draw() {
     }
     yoff +=inc;
   }
+  let test = true
   for(var i=0; i<particles.length;i++){
     particles[i].spawnpos = getPos();
     particles[i].follow(flowField);
-    particles[i].edges();
     particles[i].show();
+    particles[i].edges();
     particles[i].update();
   }
 }
@@ -68,22 +69,47 @@ function Particle(){
   this.acc = createVector(0,0);
   this.maxspeed = 10;
   this.prePos = this.pos.copy();
-
   this.update = function(){
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);
     this.pos.add(this.vel); this.acc.mult(0);
   }
-
+  this.red = 100;
+  this.green = 100;
+  this.blue = 100;
   this.applyForce = function(force){
     this.acc.add(force);
   }
 
   this.show = function(){
-    stroke(150, 0, 255, 50);
+    this.updateColor();
+    stroke(this.red, this.green, this.blue, 50);
     strokeWeight(1);
     line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
     this.updatePrev();
+  }
+
+  this.updateColor = function(){
+    if(this.pos.x>width-10){
+      this.red = 150;
+      this.green = 10;
+      this.blue = 10;
+    }
+    else if(this.pos.x<10){
+      this.red = 10;
+      this.green = 150;
+      this.blue = 10;
+    }
+    else if(this.pos.y<10){
+      this.red = 0;
+      this.green = 100;
+      this.blue = 150;
+    }
+    else if(this.pos.y>height-10){
+      this.red = 250;
+      this.green = 180;
+      this.blue = 20;
+    }
   }
 
   this.updatePrev = function(){

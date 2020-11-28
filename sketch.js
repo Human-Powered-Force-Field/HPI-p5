@@ -3,12 +3,14 @@ var scl = 20;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 7000;
+var particleObejct = 5000;
 var particles = [];
 var flowField;
 
+var testVar = 0;
+
 function setup() {
-  background(255);
+  //background(0);
   createCanvas(windowWidth,windowHeight);
   cols = floor(width/scl);
   rows = floor(height/scl);
@@ -41,17 +43,21 @@ function draw() {
     yoff +=inc;
   }
   for(var i=0; i<particles.length;i++){
+    particles[i].spawnpos = getPos();
     particles[i].follow(flowField);
     particles[i].edges();
     particles[i].show();
     particles[i].update();
   }
-  }
+}
 
 function Particle(){
-  this.pos = createVector(random(width),random(height));
-  this.vel= createVector(0,0);
-  this.acc= createVector(0,0);
+  let xpos = 0;
+  let ypos = 0;
+  this.spawnpos = createVector(random(width), random(height));
+  this.pos = this.spawnpos;
+  this.vel = createVector(0,0);
+  this.acc = createVector(0,0);
   this.maxspeed = 10;
   this.prePos = this.pos.copy();
 
@@ -66,7 +72,9 @@ function Particle(){
   }
 
   this.show = function(){
-    stroke(0,20); strokeWeight(1); line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
+    stroke(150, 0, 255, 10);
+    strokeWeight(1);
+    line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
     this.updatePrev();
   }
 
@@ -76,15 +84,15 @@ function Particle(){
 
   this.edges = function(){
     if(this.pos.x>width){
-      this.pos.x = 0;
+      this.pos = this.spawnpos;
       this.updatePrev();
     }
     if(this.pos.x<0){
-      this.pos.x = width;
+      this.pos = this.spawnpos;
       this.updatePrev();
     }
     if(this.pos.y<0){ this.pos.y = height; this.updatePrev(); } if(this.pos.y>height){
-      this.pos.y = 0;
+      this.pos = this.spawnpos;
       this.updatePrev();
     }
   }
@@ -96,4 +104,26 @@ function Particle(){
     var force = vectors[index];
     this.applyForce(force);
   }
+}
+
+function getPos(){
+  let xpos = 0;
+  let ypos = 0;
+  if (isShooting.bc == true) {
+    xpos = random(width);
+    ypos = height;
+  }
+  else if (isShooting.tc == true) {
+    xpos = random(width);
+    ypos = 0;
+  }
+  else if (isShooting.lc == true) {
+    xpos = 0;
+    ypos = random(height);
+  }
+  else if (isShooting.rc == true) {
+    xpos = width;
+    ypos = random(height);
+  }
+  return createVector(xpos, ypos);
 }

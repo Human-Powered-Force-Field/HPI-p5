@@ -21,12 +21,14 @@ body.appendChild(leftCannon);
 body.appendChild(rightCannon);
 body.appendChild(topCannon);
 
+var isShooting = {
+  bc: false,
+  lc: false,
+  rc: false,
+  tc: false
+}
+
 var db = firebase.firestore();
-db.collection("canons").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-    });
-});
 
 db.collection("canons").doc("bottomCanon")
     .onSnapshot(function(doc) {
@@ -49,21 +51,25 @@ db.collection("canons").doc("topCanon")
 });
 
 function setBottomCannon(fbData){
+  isShooting.bc = fbData.shooting;
   let val = 'Bottom Cannon Shooting: ' + fbData.shooting.toString();
   bottomCannon.innerHTML = val;
 }
 
 function setLeftCannon(fbData){
+  isShooting.lc = fbData.shooting;
   let val = 'Left Cannon Shooting: ' + fbData.shooting.toString();
   leftCannon.innerHTML = val;
 }
 
 function setRightCannon(fbData){
+  isShooting.rc = fbData.shooting;
   let val = 'Right Cannon Shooting: ' + fbData.shooting.toString();
   rightCannon.innerHTML = val;
 }
 
 function setTopCannon(fbData){
+  isShooting.tc = fbData.shooting;
   let val = 'Top Cannon Shooting: ' + fbData.shooting.toString();
   topCannon.innerHTML = val;
 }

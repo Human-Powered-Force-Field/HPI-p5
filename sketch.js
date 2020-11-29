@@ -3,7 +3,7 @@ var scl = 20;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 5000;
+var particleObejct = 7000;
 var particles = [];
 var flowField;
 
@@ -69,14 +69,16 @@ function Particle(){
   this.acc = createVector(0,0);
   this.maxspeed = 10;
   this.prePos = this.pos.copy();
+  this.red = 100;
+  this.green = 100;
+  this.blue = 100;
+  
   this.update = function(){
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);
     this.pos.add(this.vel); this.acc.mult(0);
   }
-  this.red = 100;
-  this.green = 100;
-  this.blue = 100;
+
   this.applyForce = function(force){
     this.acc.add(force);
   }

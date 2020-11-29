@@ -21,13 +21,13 @@ function setup() {
 
 function draw() {
   beginShape();
-  background(0, 100);
+  background(0, 50);
   var yoff =0;
   for(var y=0; y<rows;y++){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff)* TWO_PI;
+      var angle = noise(xoff,yoff)* TWO_PI * 5;
       var v = p5.Vector.fromAngle(angle);
       v.setMag(1);
       let pushX = (1 - x/(cols/2));

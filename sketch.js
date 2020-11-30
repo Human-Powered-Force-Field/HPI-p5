@@ -21,13 +21,13 @@ function setup() {
 
 function draw() {
   beginShape();
-  background(0, 50);
+  background(0, 15);
   var yoff =0;
   for(var y=0; y<rows;y++){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff)* TWO_PI * 5;
+      var angle = noise(xoff,yoff)* TWO_PI * 3.5;
       var v = p5.Vector.fromAngle(angle);
       v.setMag(1);
       let pushX = (1 - x/(cols/2));
@@ -72,7 +72,7 @@ function Particle(){
   this.red = 100;
   this.green = 100;
   this.blue = 100;
-  
+
   this.update = function(){
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);

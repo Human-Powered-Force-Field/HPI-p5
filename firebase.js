@@ -28,6 +28,10 @@ var isShooting = {
   tc: false
 }
 
+//var aCannonShooting = true;
+
+var generateField = true;
+
 var db = firebase.firestore();
 
 db.collection("canons").doc("bottomCanon")
@@ -50,26 +54,41 @@ db.collection("canons").doc("topCanon")
         setTopCannon(doc.data());
 });
 
+db.collection("canons").doc("newField")
+    .onSnapshot(function(doc) {
+        setNewField(doc.data());
+});
+
 function setBottomCannon(fbData){
   isShooting.bc = fbData.shooting;
   let val = 'Bottom Cannon Shooting: ' + fbData.shooting.toString();
   bottomCannon.innerHTML = val;
+  //aCannonShooting = fbData.shooting;
+  //console.log("bc");
 }
 
 function setLeftCannon(fbData){
   isShooting.lc = fbData.shooting;
   let val = 'Left Cannon Shooting: ' + fbData.shooting.toString();
   leftCannon.innerHTML = val;
+  //aCannonShooting = fbData.shooting;
+  //console.log(fbData.shooting);
 }
 
 function setRightCannon(fbData){
   isShooting.rc = fbData.shooting;
   let val = 'Right Cannon Shooting: ' + fbData.shooting.toString();
   rightCannon.innerHTML = val;
+  //aCannonShooting = fbData.shooting;
 }
 
 function setTopCannon(fbData){
   isShooting.tc = fbData.shooting;
   let val = 'Top Cannon Shooting: ' + fbData.shooting.toString();
   topCannon.innerHTML = val;
+  //aCannonShooting = fbData.shooting;
+}
+
+function setNewField(fbData){
+  generateField = fbData.generate;
 }

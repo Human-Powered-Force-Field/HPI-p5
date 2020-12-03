@@ -3,17 +3,19 @@ var scl = 10;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 2000;
+var particleObejct = 5000;
 var particles = [];
 var flowField;
 var play = true;
 var paused = false;
-
+var logged = false;
+var particleAmount = 0;
 var testVar = 0;
+var aCannonShooting = false;
 
 function setup() {
-  //createCanvas(windowWidth,windowHeight);
-  createCanvas(800,600);
+  createCanvas(windowWidth,windowHeight);
+  //createCanvas(500,300);
   background(0);
   cols = floor(width/scl);
   rows = floor(height/scl);
@@ -27,15 +29,21 @@ function draw() {
   if(play){
     paused = false;
     beginShape();
-    //background(0,1);
 
     getVecField();
+    aCannonShooting = (isShooting.bc == true || isShooting.tc == true ||
+      isShooting.lc == true || isShooting.rc == true);
 
-    for(var i=0; i<particles.length;i++){
-      particles[i].getPos();
+    if (aCannonShooting == true){
+      if (particleAmount <= particleObejct){
+        particleAmount += 2;
+      }
+    }
+
+    for(var i=0; i<particleAmount;i++){
+      particles[i].setAcc();
       if (particles[i].isRespawning == true && particles[i].initialShot == true){
         particles[i].follow(flowField);
-        particles[i].standingStill();
         particles[i].show();
         particles[i].edges();
         particles[i].update();
@@ -57,30 +65,14 @@ function getVecField(){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff)* TWO_PI * 2;
+      var angle = noise(xoff,yoff)* TWO_PI * (random(2,2.5));
       var v = p5.Vector.fromAngle(angle);
       //var v = createVector(0, 0);
-      //var pushX = (1 - (2 * x)/(cols-1))/5;
-      //var pushY = (1 - (2 * y)/(rows-1))/5;
-      var pushX = 0;
-      var pushY = 0;
-
+      var pushX = (1 - (2 * x)/(cols-1))/2;
+      var pushY = (1 - (2 * y)/(rows-1))/2;
       var pushVec = createVector(pushX, pushY);
-
-      if (isShooting.bc == true) {
-        pushVec.y = - (y/rows)*2;
-      }
-      else if (isShooting.tc == true) {
-        pushVec.y = (1 - y/rows) * 2;
-      }
-      else if (isShooting.lc == true) {
-        pushVec.x = (1 - x/cols) * 2;
-      }
-      else if (isShooting.rc == true) {
-        pushVec.x = - (x/cols) * 2;
-      }
       v.add(pushVec);
-      v.setMag(1);
+      v.setMag(0.7);
 
       flowField[index] = v;
       xoff +=inc;
@@ -91,11 +83,11 @@ function getVecField(){
 
 function Particle(){
   this.isRespawning = false;
-  this.spawnpos = createVector(1, 1);
+  this.spawnpos = createVector(floor(width/2), floor(height/2));
   this.pos = this.spawnpos.copy();
   this.vel = createVector(0,0);
   this.acc = createVector(0,0);
-  this.maxspeed = 4;
+  this.maxspeed = 1.5;
   this.prePos = this.pos.copy();
   this.red = 100;
   this.green = 100;
@@ -103,20 +95,24 @@ function Particle(){
   this.initialShot = false;
   this.shotBy = 0;
   this.colored = false;
+  this.spawnacc = createVector(0,0);
 
   this.update = function(){
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);
-    this.pos.add(this.vel); this.acc.mult(0);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
   }
 
   this.applyForce = function(force){
+    this.acc.x = this.spawnacc.x;
+    this.acc.y = this.spawnacc.y;
     this.acc.add(force);
   }
 
   this.show = function(){
     this.updateColor();
-    stroke(this.red, this.green, this.blue, 8);
+    stroke(this.red, this.green, this.blue, 20);
     strokeWeight(1);
     line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
     this.updatePrev();
@@ -155,11 +151,13 @@ function Particle(){
 
   this.edges = function(){
     if(this.pos.x>width || this.pos.x<0 || this.pos.y<0 || this.pos.y>height){
-      var aCannonShooting = (isShooting.bc == true || isShooting.tc == true || isShooting.lc == true || isShooting.rc == true);
       this.pos.x = this.spawnpos.x;
       this.pos.y = this.spawnpos.y;
+      this.acc.mult(0);
+      this.vel.mult(0);
       this.colored = false;
       this.updatePrev();
+      particleAmount += -1;
       if (aCannonShooting == true){
         this.isRespawning = true;
       }
@@ -167,17 +165,6 @@ function Particle(){
         this.isRespawning = false;
       }
     }
-  }
-
-  this.standingStill = function(){
-    /*
-    if (this.initialShot == true){
-      if (Math.sqrt((this.pos.x - this.prePos.x) ** 2 + (this.pos.x - this.prePos.x) ** 2) < 0.0001) {
-        console.log("same pos");
-        this.pos = this.spawnpos;
-      }
-    }
-    */
   }
 
   this.follow = function(vectors){
@@ -188,50 +175,48 @@ function Particle(){
     this.applyForce(force);
   }
 
-  this.getPos = function(){
-    let xpos = 0;
-    let ypos = 0;
-    var aCannonShooting = (isShooting.bc == true || isShooting.tc == true || isShooting.lc == true || isShooting.rc == true);
-    if (isShooting.bc == true) {
-      if (this.colored == false){
-        this.shotBy = 0;
+  this.setAcc = function(){
+    if (this.pos.x == floor(width/2) && this.pos.y == floor(height/2)){
+      if (isShooting.bc == true) {
+        if (this.colored == false){
+          this.shotBy = 0;
+        }
+        this.spawnacc.x = random(-1,1);
+        this.spawnacc.y = 0.4;
       }
-      xpos = random(width);
-      ypos = height-2;
-    }
-    else if (isShooting.tc == true) {
-      if (this.colored == false){
-        this.shotBy = 1;
+      else if (isShooting.tc == true) {
+        if (this.colored == false){
+          this.shotBy = 1;
+        }
+        this.spawnacc.x = random(-1,1);
+        this.spawnacc.y = -0.4;
       }
-      xpos = random(width-2);
-      ypos = 2;
-    }
-    else if (isShooting.lc == true) {
-      if (this.colored == false){
-        this.shotBy = 2;
+      else if (isShooting.lc == true) {
+        if (this.colored == false){
+          this.shotBy = 2;
+        }
+        this.spawnacc.x = -0.4;
+        this.spawnacc.y = random(-1,1);
       }
-      xpos = 2;
-      ypos = random(height-2);
-    }
-    else if (isShooting.rc == true) {
-      if (this.colored == false){
-        this.shotBy = 3;
-        this.colored = true;
+      else if (isShooting.rc == true) {
+        if (this.colored == false){
+          this.shotBy = 3;
+        }
+        this.spawnacc.x = 0.4;
+        this.spawnacc.y = random(-1,1);
       }
-      xpos = width-2;
-      ypos = random(height-2);
     }
-    this.spawnpos.x = xpos;
-    this.spawnpos.y = ypos;
+    this.spawnacc.setMag(1);
+
     if (aCannonShooting == true){
       this.isRespawning = true;
-
       if (this.initialShot == false){
-        this.pos.x = xpos;
-        this.pos.y = ypos;
         this.initialShot = true;
-        this.updatePrev();
       }
+    }
+    else {
+      this.spawnacc.x = 0;
+      this.spawnacc.y = 0;
     }
   }
 }

@@ -28,6 +28,10 @@ var isShooting = {
   tc: false
 }
 
+var shaker = {
+  val: 0
+}
+
 //var aCannonShooting = true;
 
 var generateField = true;
@@ -59,6 +63,11 @@ db.collection("canons").doc("newField")
         setNewField(doc.data());
 });
 
+db.collection("canons").doc("shaker")
+    .onSnapshot(function(doc) {
+        setShaker(doc.data());
+});
+
 function setBottomCannon(fbData){
   isShooting.bc = fbData.shooting;
   let val = 'Bottom Cannon Shooting: ' + fbData.shooting.toString();
@@ -87,6 +96,10 @@ function setTopCannon(fbData){
   let val = 'Top Cannon Shooting: ' + fbData.shooting.toString();
   topCannon.innerHTML = val;
   //aCannonShooting = fbData.shooting;
+}
+
+function setShaker(fbData){
+  shaker.val = fbData.value;
 }
 
 function setNewField(fbData){

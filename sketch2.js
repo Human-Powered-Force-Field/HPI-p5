@@ -13,6 +13,7 @@ var particleAmount = 0;
 var testVar = 0;
 var aCannonShooting = false;
 
+
 function setup() {
   createCanvas(windowWidth,windowHeight);
   //createCanvas(500,300);
@@ -61,11 +62,15 @@ function draw() {
 function getVecField(){
   var yoff =0;
   testVar += 1;
+  var randomizer = 2 + shaker.val/2;
+  if (shaker.val > 0){
+    console.log(shaker.val);
+  }
   for(var y=0; y<rows;y++){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff)* TWO_PI * (random(2,2.5));
+      var angle = noise(xoff,yoff)* TWO_PI * (random(2,randomizer));
       var v = p5.Vector.fromAngle(angle);
       //var v = createVector(0, 0);
       var pushX = (1 - (2 * x)/(cols-1))/2;

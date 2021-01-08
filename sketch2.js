@@ -95,7 +95,7 @@ function Particle(){
   this.pos = this.spawnpos.copy();
   this.vel = createVector(0,0);
   this.acc = createVector(0,0);
-  this.maxspeed = 2;
+  this.maxspeed = 1.5;
   this.prePos = this.pos.copy();
   this.red = 100;
   this.green = 100;

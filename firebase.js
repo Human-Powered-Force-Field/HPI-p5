@@ -32,9 +32,15 @@ var shaker = {
   val: 0
 }
 
-//var aCannonShooting = true;
+var newField = {
+  generate: false
+}
 
-var generateField = true;
+var pause = {
+  val: false
+}
+
+//var aCannonShooting = true;
 
 var db = firebase.firestore();
 
@@ -62,6 +68,12 @@ db.collection("canons").doc("newField")
     .onSnapshot(function(doc) {
         setNewField(doc.data());
 });
+
+db.collection("canons").doc("pause")
+    .onSnapshot(function(doc) {
+        setPause(doc.data());
+});
+
 
 db.collection("canons").doc("shaker")
     .onSnapshot(function(doc) {
@@ -103,5 +115,13 @@ function setShaker(fbData){
 }
 
 function setNewField(fbData){
-  generateField = fbData.generate;
+  if (fbData.generate){
+    newField.generate = !newField.generate;
+  }
+}
+
+function setPause(fbData){
+  if (fbData.value){
+    pause.val = !pause.val;
+  }
 }

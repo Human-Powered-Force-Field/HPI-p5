@@ -27,7 +27,7 @@ function setup() {
 }
 
 function draw() {
-  if(play){
+  if(play || !pause){
     paused = false;
     beginShape();
 
@@ -70,14 +70,17 @@ function getVecField(){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
-      var angle = noise(xoff,yoff)* TWO_PI * (random(2,randomizer));
+      var angle = noise(xoff,yoff)* TWO_PI * (random(1.2,randomizer));
       var v = p5.Vector.fromAngle(angle);
+      var v2 = createVector(Math.sin(y) * (random(1.5,randomizer)), Math.cos(x) * (random(1.5,randomizer)));
       //var v = createVector(0, 0);
-      var pushX = (1 - (2 * x)/(cols-1))/2;
-      var pushY = (1 - (2 * y)/(rows-1))/2;
+      var pushX = (-1 + (2 * x)/(cols-1))/2;
+      var pushY = (-1 + (2 * y)/(rows-1))/2;
       var pushVec = createVector(pushX, pushY);
       v.add(pushVec);
-      v.setMag(0.7);
+      if (newField.generate)
+        v.add(v2);
+      v.setMag(0.6);
 
       flowField[index] = v;
       xoff +=inc;
@@ -92,7 +95,7 @@ function Particle(){
   this.pos = this.spawnpos.copy();
   this.vel = createVector(0,0);
   this.acc = createVector(0,0);
-  this.maxspeed = 1.5;
+  this.maxspeed = 2;
   this.prePos = this.pos.copy();
   this.red = 100;
   this.green = 100;
@@ -117,7 +120,7 @@ function Particle(){
 
   this.show = function(){
     this.updateColor();
-    stroke(this.red, this.green, this.blue, 20);
+    stroke(this.red, this.green, this.blue, 50);
     strokeWeight(1);
     line(this.pos.x,this.pos.y,this.prePos.x,this.prePos.y);
     this.updatePrev();
@@ -125,27 +128,27 @@ function Particle(){
 
   this.updateColor = function(){
     if (this.shotBy == 0) {
-      this.red = 250;
-      this.green = 180;
-      this.blue = 20;
+      this.red = 255;
+      this.green = 170;
+      this.blue = 0;
       this.colored = true;
     }
     else if (this.shotBy == 1) {
-      this.red = 0;
-      this.green = 100;
-      this.blue = 150;
+      this.red = 100;
+      this.green = 0;
+      this.blue = 255;
       this.colored = true;
     }
     else if (this.shotBy == 2) {
-      this.red = 10;
-      this.green = 150;
-      this.blue = 10;
+      this.red = 255;
+      this.green = 20;
+      this.blue = 255;
       this.colored = true;
     }
     else if (this.shotBy == 3) {
-      this.red = 150;
-      this.green = 10;
-      this.blue = 10;
+      this.red = 255;
+      this.green = 0;
+      this.blue = 0;
       this.colored = true;
     }
   }
@@ -188,6 +191,8 @@ function Particle(){
         }
         this.spawnacc.x = random(-1,1);
         this.spawnacc.y = 0.4;
+        this.acc.x = random(-1,1);
+        this.acc.y = 0.4;
       }
       else if (isShooting.tc == true) {
         if (this.colored == false){
@@ -195,6 +200,8 @@ function Particle(){
         }
         this.spawnacc.x = random(-1,1);
         this.spawnacc.y = -0.4;
+        this.acc.x = random(-1,1);
+        this.acc.y = -0.4;
       }
       else if (isShooting.lc == true) {
         if (this.colored == false){
@@ -202,6 +209,8 @@ function Particle(){
         }
         this.spawnacc.x = -0.4;
         this.spawnacc.y = random(-1,1);
+        this.acc.x = -0.4;
+        this.acc.y = random(-1,1);
       }
       else if (isShooting.rc == true) {
         if (this.colored == false){
@@ -209,6 +218,8 @@ function Particle(){
         }
         this.spawnacc.x = 0.4;
         this.spawnacc.y = random(-1,1);
+        this.acc.x = 0.4;
+        this.acc.y = random(-1,1);
       }
     }
     this.spawnacc.setMag(1);

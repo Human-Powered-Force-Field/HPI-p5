@@ -3,7 +3,7 @@ var scl = 10;
 var cols;
 var rows;
 var zoff = 0;
-var particleObejct = 5000;
+var particleObejct = 6000;
 var particles = [];
 var flowField;
 var play = true;
@@ -27,8 +27,7 @@ function setup() {
 }
 
 function draw() {
-  if(play || !pause){
-    paused = false;
+  if(pause.val == false){
     beginShape();
 
     getVecField();
@@ -51,28 +50,20 @@ function draw() {
       }
     }
   }
-  else {
-    if(paused== false){
-      console.log("Paused");
-      paused = true;
-    }
-  }
 }
 
 function getVecField(){
   var yoff =0;
   testVar += 1;
   var randomizer = 2 + shaker.val/2;
-  if (shaker.val > 0){
-    console.log(shaker.val);
-  }
+  var randomizer2 = 1 + shaker.val/2;
   for(var y=0; y<rows;y++){
     xoff =0;
     for(var x=0; x<cols;x++){
       var index = x+y*cols;
       var angle = noise(xoff,yoff)* TWO_PI * (random(1.2,randomizer));
       var v = p5.Vector.fromAngle(angle);
-      var v2 = createVector(Math.sin(y) * (random(1.5,randomizer)), Math.cos(x) * (random(1.5,randomizer)));
+      var v2 = createVector(Math.sin(y * random(1,randomizer2)) * (random(1.5,randomizer)), Math.cos(x * random(1,randomizer2)) * random(1.5,randomizer));
       //var v = createVector(0, 0);
       var pushX = (-1 + (2 * x)/(cols-1))/2;
       var pushY = (-1 + (2 * y)/(rows-1))/2;

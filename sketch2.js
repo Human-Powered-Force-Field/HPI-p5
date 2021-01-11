@@ -71,7 +71,7 @@ function getVecField(){
       v.add(pushVec);
       if (newField.generate)
         v.add(v2);
-      v.setMag(0.6);
+      v.setMag(0.3);
 
       flowField[index] = v;
       xoff +=inc;

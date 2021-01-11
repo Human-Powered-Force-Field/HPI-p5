@@ -181,35 +181,35 @@ function Particle(){
           this.shotBy = 0;
         }
         this.spawnacc.x = random(-1,1);
-        this.spawnacc.y = 0.3;
+        this.spawnacc.y = 0.5;
         this.acc.x = random(-1,1);
-        this.acc.y = 0.3;
+        this.acc.y = 0.5;
       }
       else if (isShooting.tc == true) {
         if (this.colored == false){
           this.shotBy = 1;
         }
         this.spawnacc.x = random(-1,1);
-        this.spawnacc.y = -0.3;
+        this.spawnacc.y = -0.5;
         this.acc.x = random(-1,1);
-        this.acc.y = -0.3;
+        this.acc.y = -0.5;
       }
       else if (isShooting.lc == true) {
         if (this.colored == false){
           this.shotBy = 2;
         }
-        this.spawnacc.x = -0.3;
+        this.spawnacc.x = -0.5;
         this.spawnacc.y = random(-1,1);
-        this.acc.x = -0.3;
+        this.acc.x = -0.5;
         this.acc.y = random(-1,1);
       }
       else if (isShooting.rc == true) {
         if (this.colored == false){
           this.shotBy = 3;
         }
-        this.spawnacc.x = 0.3;
+        this.spawnacc.x = 0.5;
         this.spawnacc.y = random(-1,1);
-        this.acc.x = 0.3;
+        this.acc.x = 0.5;
         this.acc.y = random(-1,1);
       }
     }
